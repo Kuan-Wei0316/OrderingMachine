@@ -1,17 +1,17 @@
 <?php
-header("Access-Control-Allow-Origin: *");
 require_once "conn.php";
+$inputData = $_POST;
 $outputData=array();
+$productLabel=$_POST["productLabel"];
 session_start();
-$sql="SELECT DISTINCT product_label FROM product";
+$sql="SELECT product_name FROM product WHERE product_label='". $productLabel ."';";
 $result=$conn->query($sql);
 while($row=$result->fetch_assoc()){
     $obj = [
-        "label" => $row["product_label"]
+        "product_name" => $row["product_name"]
     ];
     array_push($outputData, $obj);
 }
-
 $outputJSON = json_encode($outputData);
 echo $outputJSON;
 ?>
