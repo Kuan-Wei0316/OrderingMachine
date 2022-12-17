@@ -16,7 +16,10 @@ body {
     width: calc(100% /5);
     height: 10%
 }
-
+#menubar>ul>li>button{
+    width:100%;
+    background-color:rgb(212, 212, 255) ;
+}
 #column ul {
     text-align: justify;
     list-style:none;
