@@ -1,0 +1,29 @@
+body {
+    font-family: "Playfair Display", serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.7;
+    color: #09003c86;
+    background: #fff;
+  }
+  
+#menubar>ul>li{
+    background-color: rgb(212, 212, 255);
+    float:left;
+    text-align: center;
+    width: calc(100% /5);
+    height: 10%
+}
+table{
+    border:1px solid rgb(0, 0, 0);
+   }
+   table th{
+    border: 1px solid rgb(0, 0, 0);
+    padding: 5px;
+    color:gold;
+   }
+   table td{
+    border: 1px solid rgb(0, 0, 0);
+    padding: 5px;
+    color: rgb(0, 0, 0);
+   }
