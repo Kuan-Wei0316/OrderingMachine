@@ -3,27 +3,37 @@ $(document).ready(function(){
         var selectLabel=$("#productCate").val();
         alert(selectLabel);
     })
-    $("#conBtn").click(function(){
-        
-    })
+    let conBtn = document.getElementById("conBtn");
+    conBtn.addEventListener("click", setProduct, false);
     $("#addNewLabelBtn").click(function(){
         $("#productCate").append("<option value='"+$('#addNewLabel').val()+"'>"+$('#addNewLabel').val()+"</option>")
     })
 })
 
-async function addLabel(){
-    let productLabelId="";
-    let productLabel=$("#addNewLabel").val();
+async function setProduct(){
+    let productId = "";
+    let productName = $("#productName").val();
+    let productImg = "";//await uploadImage($("#productPic"));
+    let productText = $("#productIntro").val();
+    let productLabel = $("#productCate").val();
+    let productCost = $("#productPrice").val();
 
     $.ajax({
-        url:'php/addLabel.php',
+        url:'php/setProduct.php',
         type:"POST",
         data:{
-            "productLabelId": productLabelId,
-            "productLabel": productLabel
+            "productId": productId,
+            "productName": productName,
+            "productImg": productImg,
+            "productText": productText,
+            "productLabel": productLabel,
+            "productCost": productCost
         },
+        
     })
-    .done(function(data){
-        let obj
+    .done(function(data) {
+        let obj = JSON.parse(data);
+        console.log(obj.message);
     })
+    //location.reload();
 }
