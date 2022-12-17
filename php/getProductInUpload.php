@@ -8,7 +8,7 @@ $sql="SELECT product_name FROM product WHERE product_label='". $productLabel ."'
 $result=$conn->query($sql);
 while($row=$result->fetch_assoc()){
     $obj = [
-        "product_name" => $row["product_name"]
+        "product_name" => $row["product_name"],
     ];
     array_push($outputData, $obj);
 }

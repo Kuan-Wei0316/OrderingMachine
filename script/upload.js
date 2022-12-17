@@ -74,17 +74,27 @@ function showAllLabelInSelect(){
 
                 let collapseItem=document.createElement("div");
                 collapseItem.setAttribute("id","collapse-"+objs[i].label);
-                collapseItem.setAttribute("class","accordion-collapse collapse");
+                //collapseItem.setAttribute("class","accordion-collapse collapse");
+                collapseItem.setAttribute("class","accordion-collapse collapse list-group");
                 collapseItem.setAttribute("aria-labelledby","headingOne");
                 collapseItem.setAttribute("data-bs-parent","#productAccordion");
                 let collapseBody=document.createElement("div");
-                collapseBody.setAttribute("class","accordion-body");
+                /**************************************************** */
+                //collapseBody.setAttribute("class","accordion-body");
+                collapseBody.setAttribute("class","accordion-body list-group");
+                /***************************************************** */
                 collapseBody.setAttribute("id","collapseBody-"+objs[i].label);
-                let productUl=document.createElement("ul");
-                productUl.setAttribute("class","list-group");
-                productUl.setAttribute("id","ul-"+objs[i].label);
-                collapseBody.appendChild(productUl);
-                collapseItem.appendChild(collapseBody);
+                // let productUl=document.createElement("ul");
+                // productUl.setAttribute("class","list-group");
+                // productUl.setAttribute("id","ul-"+objs[i].label);
+                // collapseBody.appendChild(productUl);
+                
+                let divList=document.createElement("div");
+                divList.setAttribute("class","list-group");
+                divList.setAttribute("id","divList-"+objs[i].label);
+                //collapseBody.appendChild(divList);
+
+                //collapseItem.appendChild(collapseBody);
                 accordionItem.appendChild(collapseItem);
                 document.getElementById("collapseTitle").appendChild(accordionItem);
                 showAllProductInUpload(objs[i].label);
@@ -102,17 +112,28 @@ function showAllProductInUpload(productLabel){
             let datas=JSON.parse(result);
             console.log(datas);
             for(let i=0;i<datas.length;i++){
-                let productLi=document.createElement("li");
-                productLi.setAttribute("class","list-group");
-                productLi.setAttribute("id","li-"+datas[i].product_name);
-                document.getElementById("ul-"+productLabel).appendChild(productLi);
+                // let productLi=document.createElement("li");
+                // productLi.setAttribute("class","list-group");
+                // productLi.setAttribute("id","li-"+datas[i].product_name);
+                // document.getElementById("ul-"+productLabel).appendChild(productLi);
                 
+                // let productButton=document.createElement("button");
+                // productButton.setAttribute("id",datas[i].product_name);
+                // productButton.innerHTML=datas[i].product_name;
+                // productLi.appendChild(productButton);
+
                 let productA=document.createElement("a");
-                productA.setAttribute("id",datas[i].product_name);
+                productA.setAttribute("href","#");
+                productA.setAttribute("class","list-group-item list-group-item-action");
                 productA.innerHTML=datas[i].product_name;
-                productLi.appendChild(productA);
+                
+                document.getElementById("collapse-"+productLabel).appendChild(productA);
+                productA.addEventListener("click",showProductDetail(datas[i].product_name),false);
 
             }
         }
     })
+}
+function showProductDetail(product_name){
+    console.log("detail-"+product_name);
 }
