@@ -1,5 +1,8 @@
 let loginDiv;
 let loginInfo = {};
+let pdLabel = [];
+let curLabel = "";
+
 $(document).ready(function() {
     init();
 });
@@ -11,6 +14,7 @@ function init() {
     $('#loginBtn').click(function() {
         postLogin($('#loginName').val(), $('#loginPwd').val());
     });
+    getLabel();
 }
 
 function showLogin() {
@@ -77,4 +81,68 @@ function logout() {
             console.log(res);
         }
     });
+}
+
+function getLabel() {
+    $.ajax({
+        url: "php/getLabel.php",
+        type: 'GET',
+        success: function(res) {
+            res = JSON.parse(res);
+            pdLabel = [];
+            for (let i = 0; i < res.length; ++i) {
+                pdLabel.push(res[i].label);
+            }
+            if (curLabel == "") {
+                curLabel = pdLabel[0];
+            }
+            drawPdCard();
+        }
+    })
+}
+
+function drawPdCard() {
+    console.log("draw");
+    $('#pdLabelBar').html("");
+    for (let i = 0; i < pdLabel.length; ++i) {
+        $('#pdLabelBar').append(
+            $('<button></button>')
+            .attr('type', 'button')
+            .addClass('btn')
+            .addClass('btn-light')
+            .addClass('m-1')
+            .html(pdLabel[i])
+            .click(function() {
+
+            })
+        );
+    }
+}
+
+function getProduct() {
+    $.ajax({
+        url: 'php/getProduct.php',
+        type: 'POST',
+        data: {
+
+        },
+        success: function(res) {
+
+        }
+    });
+}
+
+function drawProducts() {
+    // <div class="card m-1 productCard">
+    //                 <div class="card-header p-1">
+    //                     <span class="card-text">Cola</span>
+    //                 </div>
+    //                 <div class="card-body w-100 p-0" style="background-image: url('upload/shark.png');background-size:cover;">
+    //                 </div>
+    //                 <div class="card-footer p-1">
+    //                     <span class="card-text">$100</span>
+    //                 </div>
+    //             </div>
+    $("#pdList").html("");
+
 }
