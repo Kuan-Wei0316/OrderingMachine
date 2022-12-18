@@ -6,7 +6,9 @@ body {
     color: #09003c86;
     background: #fff;
   }
-  
+  #menubar{
+    padding-right: 30px;
+  }
 #menubar>ul>li{
     list-style:none;
     background-color: rgb(212, 212, 255);
