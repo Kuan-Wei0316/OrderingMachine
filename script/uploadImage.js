@@ -37,10 +37,84 @@ function imgurAPI(fData) {
     });
 }
 
+function freeImageAPI(fData) {
+    return new Promise(function(resolve, reject) {
+        $.ajax({
+            url: "https://freeimage.host/api/1/upload",
+            data: JSON.stringify({
+                "image": fData.slice(fData.indexOf(",") + 1),
+                "key": "6d207e02198a847aa98d0a2a901485a5",
+                "format": "json"
+            }),
+            type: "POST",
+            dataType: "json",
+            contentType: "application/json;charset=utf-8",
+            success: function(returnData) {
+                resolve(returnData["image"]["url"]);
+            },
+            error: function(xhr, ajaxOptions, thrownError) {
+                console.log(xhr.status);
+                console.log(thrownError);
+                reject(thrownError);
+            },
+        });
+    });
+}
+
+function imgbbAPI(fData) {
+    return new Promise(function(resolve, reject) {
+        $.ajax({
+            url: "https://api.imgbb.com/1/upload",
+            data: JSON.stringify({
+                "key": "9d0a6aa08db5c141199ee07323b2e961",
+                "image": fData.slice(fData.indexOf(",") + 1)
+            }),
+            type: "POST",
+            dataType: "json",
+            contentType: "application/json;charset=utf-8",
+            success: function(returnData) {
+                resolve(returnData["data"]["url"]);
+            },
+            error: function(xhr, ajaxOptions, thrownError) {
+                console.log(xhr.status);
+                console.log(thrownError);
+                reject(thrownError);
+            },
+        });
+    });
+}
+
+function myAPI(element) {
+    return new Promise(function(resolve, reject) {
+        let formData = new FormData();
+        formData.append('image', element[0].files[0]);
+        $.ajax({
+            url: "http://localhost/workSpace/OrderingMachine/php/uploadImage.php",
+            type: "POST",
+            data: formData,
+            contentType: false, //required
+            processData: false, // required
+            mimeType: 'multipart/form-data',
+        }).done(function(res) {
+            res = JSON.parse(res);
+            if (res.state == 200) {
+                resolve(res.url);
+            } else {
+                console.log(res);
+            }
+        });
+    });
+}
+
 async function uploadImage(element) { //element是網頁中的原件，請已JQuery元件表示，如$("#inputFile")；結果會回傳照片的網址，使用時請加await
-    let fileData = await fetchFile(element);
-    let retURL = await imgurAPI(fileData);
-    return await retURL;
+    // let fileData = await fetchFile(element);
+    // let retURL = await imgurAPI(fileData);
+    // return await retURL;
+    return await myAPI(element);
+}
+
+async function testUploadImg(element) {
+    return await myAPI(element);
 }
 
 /*
