@@ -1,0 +1,25 @@
+.flex-container {
+    display: flex;
+    flex-wrap: nowrap;
+    background-color: #9fc5e1;
+    height: 100vh;
+    overflow-x: auto;
+  }
+  
+.flex-container > div {
+    margin: 20px;
+    max-width: 300px;
+    min-width:300px;
+    max-height: 100vh;
+}
+.card-body{
+    font-weight: bold;
+    max-height: 76vh;
+    overflow-y: auto;
+}
+h5{
+    font-weight: bold;
+}
+button{
+    font-weight: bolder;
+}
