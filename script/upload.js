@@ -1,4 +1,5 @@
 $(document).ready(function(){
+    localStorage.setItem("currentId","");
     showAllLabelInSelect();
     $("#productCate").change(function(){
         var selectLabel=$("#productCate").val();
@@ -6,19 +7,25 @@ $(document).ready(function(){
     })
     let conBtn = document.getElementById("conBtn");
     conBtn.addEventListener("click", setProduct, false);
+    let canBtn = document.getElementById("canBtn");
+    canBtn.addEventListener("click", function(){
+        location.reload();
+    }, false);
+    let delBtn=document.getElementById("delBtn");
+    delBtn.addEventListener("click",delProduct,false);
     $("#addNewLabelBtn").click(function(){
         $("#productCate").append("<option value='"+$('#addNewLabel').val()+"'>"+$('#addNewLabel').val()+"</option>")
     })
 })
 
-async function setProduct(){
-    let productId = "";
+function setProduct(){
+    let productId = localStorage.getItem("currentId");
+    console.log(productId);
     let productName = $("#productName").val();
     let productImg = "";//await uploadImage($("#productPic"));
     let productText = $("#productIntro").val();
     let productLabel = $("#productCate").val();
     let productCost = $("#productPrice").val();
-
     $.ajax({
         url:'php/setProduct.php',
         type:"POST",
@@ -35,10 +42,23 @@ async function setProduct(){
     .done(function(data) {
         let obj = JSON.parse(data);
         console.log(obj.message);
+        localStorage.setItem("currentId","");
+    })
+    location.reload();
+
+}
+function delProduct(){
+    $.ajax({
+        url:'php/delProduct.php',
+        type:"POST",
+        data:{"productId":localStorage.getItem("currentId")},
+    })
+    .done(function(data){
+        let obj = JSON.parse(data);
+        console.log(obj.message);
     })
     location.reload();
 }
-
 function showAllLabelInSelect(){
     $.ajax({
         url:'php/getLabel.php',
@@ -107,33 +127,42 @@ function showAllProductInUpload(productLabel){
         url:"php/getProductInUpload.php",
         type:"POST",
         data:{"productLabel": productLabel},
-
-        success:function(result){
-            let datas=JSON.parse(result);
-            console.log(datas);
-            for(let i=0;i<datas.length;i++){
-                // let productLi=document.createElement("li");
-                // productLi.setAttribute("class","list-group");
-                // productLi.setAttribute("id","li-"+datas[i].product_name);
-                // document.getElementById("ul-"+productLabel).appendChild(productLi);
-                
-                // let productButton=document.createElement("button");
-                // productButton.setAttribute("id",datas[i].product_name);
-                // productButton.innerHTML=datas[i].product_name;
-                // productLi.appendChild(productButton);
-
-                let productA=document.createElement("a");
-                productA.setAttribute("href","#");
-                productA.setAttribute("class","list-group-item list-group-item-action");
-                productA.innerHTML=datas[i].product_name;
-                
-                document.getElementById("collapse-"+productLabel).appendChild(productA);
-                productA.addEventListener("click",showProductDetail(datas[i].product_name),false);
-
-            }
+    }).done(function(result){
+        let datas=JSON.parse(result);
+        //console.log(datas);
+        for(let i=0;i<datas.length;i++){
+            let productA=document.createElement("a");
+            productA.setAttribute("id",datas[i].product_id);
+            productA.setAttribute("href","#");
+            productA.setAttribute("class","list-group-item list-group-item-action");
+            productA.innerHTML=datas[i].product_name;
+            
+            document.getElementById("collapse-"+productLabel).appendChild(productA);
+        }
+        for(let i=0;i<datas.length;i++){
+            let id=datas[i].product_id;
+            $("#"+datas[i].product_id).click(function(){
+                //console.log(datas[i].product_id)
+                $.ajax({
+                    url:"php/getProduct.php",
+                    type:"POST",
+                    data:{"productId": datas[i].product_id},
+                }).done(function(res){
+                    let productData=JSON.parse(res);
+                    //console.log(productData[0]);
+                    //console.log(productData[0].product_name);
+                    //$("#"+productData[0].product_id).attr("class","list-group-item list-group-item-action active");
+                    $("#productName").val(productData[0].product_name);
+                    $("#productIntro").val(productData[0].product_intro);
+                    $("#productCate").val(productData[0].product_label);
+                    $("#productPic").val(productData[0].product_img);
+                    $("#productPrice").val(productData[0].product_price);
+                    localStorage.setItem("currentId",productData[0].product_id);
+                    id=datas[i].product_id;
+                    console.log(id);
+                })
+            })
+            //$("#"+datas[i].product_id).attr("class","list-group-item list-group-item-action");
         }
     })
-}
-function showProductDetail(product_name){
-    console.log("detail-"+product_name);
 }

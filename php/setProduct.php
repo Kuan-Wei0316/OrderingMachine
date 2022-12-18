@@ -21,26 +21,19 @@ try{
             throw new Exception("MySQL is broken.");
         }
     }else{
-        $sql="SELECT product_id FROM product WHERE product_id='".$productId."';";
-        $result=$conn->query($sql);
-        if($row = $result->fetch_assoc()){
-            $sql =   "UPDATE product
+        $sql = "UPDATE product
                 SET product_name='" . $productName . "',
                 product_img='" . $productImg . "',
                 product_intro='" . $productText . "',
                 product_label='" . $productLabel . "',
-                product_price='" . $productCost . "' ,
+                product_price='" . $productCost . "' 
                 WHERE product_id='" . $productId . "';";
-            $result = $conn->query($sql);
-            if ($result === TRUE) {
-                $outputData["state"] = 200;
-                $outputData["message"] = "update success";
-            } else {
-                throw new Exception("MySQL is broken.");
-            }
-        }else{
-            $outputData["state"] = 410;
-            $outputData["message"] = "no product found";
+        $result = $conn->query($sql);
+        if ($result === TRUE) {
+            $outputData["state"] = 200;
+            $outputData["message"] = "update success";
+        } else {
+            throw new Exception("MySQL is broken.");
         }
     }
 } catch(Exception $e){
