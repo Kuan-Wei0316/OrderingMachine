@@ -1,0 +1,26 @@
+body {
+    font-family: "Playfair Display", serif;
+    font-weight: 400;
+    font-size: 22px;
+    line-height: 1.7;
+    color: #09003c86;
+    background: #fff;
+  }
+#cart{
+    font-size: 15px;
+    font-family: Arial, Helvetica, sans-serif;
+    width: 100%;
+    table-layout: fixed;
+    align-items: center;
+    border:black
+}
+
+#cart,tr,td {
+    border: 1px;
+    padding: 8px;
+ }
+ 
+ #pay{
+margin-right: 12px;
+ }
+  
