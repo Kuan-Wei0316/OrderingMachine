@@ -1,0 +1,14 @@
+body {
+    margin: 0px;
+}
+
+#wrap {
+    width: 100vw;
+    height: 100vh;
+}
+
+#loginDiv {
+    background-color: red;
+    width: 10vw;
+    height: 10vw;
+}
