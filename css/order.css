@@ -52,6 +52,6 @@ height: 100%-200px;
 }
 
 .column04 li {
-	width: calc(25% - 20px);
+	width: calc(25% - 0px);
 }
 
