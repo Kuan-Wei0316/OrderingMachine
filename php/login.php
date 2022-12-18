@@ -6,11 +6,11 @@ try {
         $sql="SELECT * FROM employee WHERE e_name='".$_POST['name']."';";
         $result =$conn->query($sql);
         $outputData['message'] = "login failed";
-        $outputData['status'] = 404;
+        $outputData['state'] = 404;
         while ($row = $result->fetch_assoc()){
             if(password_verify($_POST['pwd'], $row['e_pwd_hash'])){
                 $outputData['message'] = "OK";
-                $outputData['status'] = 200;
+                $outputData['state'] = 200;
                 $outputData['e_name']=$row['e_name'];
                 $outputData['e_id']=$row['e_id'];
                 session_start();
