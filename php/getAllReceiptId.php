@@ -2,15 +2,25 @@
 header("Access-Control-Allow-Origin: *");
 require_once "conn.php";
 $outputData=array();
-session_start();
-$sql="SELECT receipt_id FROM receipt";
-$result=$conn->query($sql);
-while($row=$result->fetch_assoc()){
-    $obj = [
-        "id" => $row["receipt_id"]
-    ];
-    array_push($outputData, $obj);
+try{
+    session_start();
+    if(isset($_SESSION["e_id"])){
+        $sql="SELECT * FROM receipt WHERE payment<> '1' OR delivery<> '1';";
+        $result=$conn->query($sql);
+        $outputData["data"] = array();
+        while($row=$result->fetch_assoc()){
+            array_push($outputData["data"], $row);
+        }
+    }
+    else{
+        $outputData["state"] = 404;
+        $outputData["message"] = "no session";
+    }
+}catch(Exception $e){
+    $outputData["state"]=500;
+    $outputData["message"] = $e->getMessage();
 }
+
 
 $outputJSON = json_encode($outputData);
 echo $outputJSON;
