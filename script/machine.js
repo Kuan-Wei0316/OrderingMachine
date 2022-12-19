@@ -6,6 +6,9 @@ let productList;
 let productData = [];
 let cart = [];
 let productMap = {};
+var newpage;
+
+let waitPost;
 $(document).ready(function() {
     init();
 });
@@ -39,18 +42,33 @@ function postCreateReceipt() {
             comment: getComment(),
             takeout: ($('#takeoutBtn')[0].checked ? '1' : '0')
         },
-        success: function(res) {
+        success: async function(res) {
             res = JSON.parse(res);
             if (res.state == 200) {
                 for (let i = 0; i < cart.length; ++i) {
-                    postAddSell(res.receiptId, cart[i].id, cart[i].num);
+                    await postAddSell(res.receiptId, cart[i].id, cart[i].num);
                 }
             }
+
+
             cart = [];
             drawResult();
-            window.open('', '_blank');
+            openWindow({
+                e_id: loginInfo.e_id,
+                r_id: res.receiptId
+            });
+
+
         }
     })
+}
+
+function openWindow(data) {
+
+    $.post('php/printReceipt.php', data, function(result) {
+        newpage = result;
+        window.open('receipt.html', 'popUpWindow', 'height=800, width=400, left=300, top=100, resizable=yes, scrollbars=yes, toolbar=yes, menubar=no, location=no, directories=no, status=yes');
+    });
 }
 
 function getComment() {
@@ -62,22 +80,26 @@ function getComment() {
 }
 
 function postAddSell(rId, pId, num) {
-    $.ajax({
-        url: 'php/addSell.php',
-        type: 'POST',
-        data: {
-            productId: pId,
-            num: num,
-            receiptId: rId
-        },
-        success: function(res) {
-            res = JSON.parse(res);
-            if (res.state == 200) {;
-            } else {
-                console.log(res);
+    return new Promise(function(resolve, reject) {
+        $.ajax({
+            url: 'php/addSell.php',
+            type: 'POST',
+            data: {
+                productId: pId,
+                num: num,
+                receiptId: rId
+            },
+            success: function(res) {
+                res = JSON.parse(res);
+                if (res.state == 200) {} else {
+                    console.log(res);
+                }
+                --waitPost;
+                resolve();
             }
-        }
-    })
+        })
+    });
+
 }
 
 function showLogin() {
