@@ -75,7 +75,7 @@
 
     <div class="d-flex h-25 flex-column fixed-bottom" style="">
         <div class="border text-bg-success p-1">我的訂單</div>
-        <div class="border my-auto" style="overflow: auto;">
+        <div id="resultDiv" class="border my-auto" style="overflow: auto;">
             <div class="border p-1">
                 <span>cola</span>
                 <span>*</span>
@@ -96,8 +96,15 @@
             </div>
         </div>
         <div class="border d-flex flex-row align-items-center justify-content-center mt-auto">
-            <button type="button" class="btn btn-danger m-1">Primary</button>
-            <button type="button" class="btn btn-success m-1">Primary</button>
+            <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked>
+                <label class="btn btn-outline-primary" for="btnradio1" value="0">內用</label>
+
+                <input type="radio" class="btn-check" name="btnradio" id="takeoutBtn" autocomplete="off">
+                <label class="btn btn-outline-primary" for="takeoutBtn" value="1">外帶</label>
+            </div>
+            <button id="clearBtn" type="button" class="btn btn-danger m-1">取消訂單</button>
+            <button id="sendBtn" type="button" class="btn btn-success m-1">完成</button>
         </div>
     </div>
 

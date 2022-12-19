@@ -2,7 +2,10 @@ let loginDiv;
 let loginInfo = {};
 let pdLabel = [];
 let curLabel = "";
-
+let productList;
+let productData = [];
+let cart = [];
+let productMap = {};
 $(document).ready(function() {
     init();
 });
@@ -14,7 +17,67 @@ function init() {
     $('#loginBtn').click(function() {
         postLogin($('#loginName').val(), $('#loginPwd').val());
     });
+    $('#clearBtn').click(function() {
+        cart = [];
+        drawResult();
+    });
+    $('#sendBtn').click(function() {
+        if (cart.length > 0) {
+            postCreateReceipt();
+        }
+    });
     getLabel();
+    getAllProduct();
+    drawResult();
+}
+
+function postCreateReceipt() {
+    $.ajax({
+        url: 'php/createReceipt.php',
+        type: 'POST',
+        data: {
+            comment: getComment(),
+            takeout: ($('#takeoutBtn')[0].checked ? '1' : '0')
+        },
+        success: function(res) {
+            res = JSON.parse(res);
+            if (res.state == 200) {
+                for (let i = 0; i < cart.length; ++i) {
+                    postAddSell(res.receiptId, cart[i].id, cart[i].num);
+                }
+            }
+            cart = [];
+            drawResult();
+            window.open('', '_blank');
+        }
+    })
+}
+
+function getComment() {
+    let ret = "";
+    for (let i = 0; i < cart.length; ++i) {
+        ret += productMap[cart[i].id].product_name + ":" + cart[i].comment + ',<br>';
+    }
+    return ret;
+}
+
+function postAddSell(rId, pId, num) {
+    $.ajax({
+        url: 'php/addSell.php',
+        type: 'POST',
+        data: {
+            productId: pId,
+            num: num,
+            receiptId: rId
+        },
+        success: function(res) {
+            res = JSON.parse(res);
+            if (res.state == 200) {;
+            } else {
+                console.log(res);
+            }
+        }
+    })
 }
 
 function showLogin() {
@@ -93,10 +156,8 @@ function getLabel() {
             for (let i = 0; i < res.length; ++i) {
                 pdLabel.push(res[i].label);
             }
-            if (curLabel == "") {
-                curLabel = pdLabel[0];
-            }
             drawPdCard();
+            drawProducts();
         }
     })
 }
@@ -113,21 +174,24 @@ function drawPdCard() {
             .addClass('m-1')
             .html(pdLabel[i])
             .click(function() {
-
+                curLabel = pdLabel[i];
+                drawProducts();
             })
         );
     }
 }
 
-function getProduct() {
+function getAllProduct() {
     $.ajax({
-        url: 'php/getProduct.php',
-        type: 'POST',
-        data: {
-
-        },
+        url: 'php/getAllProduct.php',
+        type: 'GET',
         success: function(res) {
-
+            res = JSON.parse(res);
+            productData = res.data;
+            productMap = {};
+            for (let i = 0; i < productData.length; ++i) {
+                productMap[productData[i].product_id] = productData[i];
+            }
         }
     });
 }
@@ -143,6 +207,121 @@ function drawProducts() {
     //                     <span class="card-text">$100</span>
     //                 </div>
     //             </div>
+    console.log("drawProduct");
+    if (curLabel == "") curLabel = pdLabel[0];
     $("#pdList").html("");
+    for (let i = 0; i < productData.length; i++) {
+        if (productData[i].product_label == curLabel) {
+            $("#pdList").append(
+                $('<div></div>')
+                .addClass('card').addClass('m-1').addClass("productCard")
+                .append(
+                    $('<div></div>')
+                    .addClass('card-header').addClass('p-1')
+                    .append(
+                        $('<span></span>')
+                        .addClass('card-text')
+                        .html(productData[i].product_name)
+                    )
+                ).append(
+                    $('<div></div>')
+                    .addClass('card-body').addClass('w-100').addClass('p-0')
+                    .attr('style', ('background-image: url("' + productData[i].product_img + '");background-size:cover;'))
+                ).append(
+                    $('<div></div>')
+                    .addClass('card-footer').addClass('p-1')
+                    .append(
+                        $('<span></span>')
+                        .addClass('card-text')
+                        .html(productData[i].product_price)
+                    )
+                ).click(function() {
+                    putInCart(productData[i].product_id);
+                })
+            );
+        }
+    }
+
+
+}
+
+function putInCart(productId) {
+    console.log("putinCart", productId);
+    let idx = -1;
+    for (let i = 0; i < cart.length; i++) {
+        if (cart[i].id == productId) {
+            idx = i;
+            break;
+        }
+    }
+    if (idx == -1) {
+        let obj = {
+            id: productId,
+            num: 1,
+            comment: ""
+        }
+        cart.push(obj);
+    } else {
+        ++cart[idx].num;
+    }
+    drawResult();
+}
+
+function drawResult() {
+    // <div class="input-group mb-3">
+    //     <span class="input-group-text">$</span>
+    //     <span class="input-group-text">0.00</span>
+    //<button class="btn btn-outline-secondary" type="button" id="button-addon1">Button</button>
+    //     <input type="text" class="form-control" aria-label="Dollar amount (with dot and two decimal places)">
+    // </div>
+
+    $('#resultDiv').html("")
+    for (let i = 0; i < cart.length; i++) {
+        $('#resultDiv').append(
+            $('<div></div>')
+            .addClass('input-group border')
+            .append(
+                $('<span></span>')
+                .addClass('input-group-text')
+                .html(productMap[cart[i].id].product_name)
+            )
+            .append(
+                $('<span></span>')
+                .addClass('input-group-text')
+                .html(cart[i].num + "份")
+            )
+            .append(
+                $('<button></button>')
+                .addClass('btn').addClass('btn-danger')
+                .attr('type', 'button')
+                .html("-1")
+                .click(function() {
+                    if (cart[i].num > 1) {
+                        --cart[i].num;
+                    } else {
+                        let tmp = [];
+                        for (let j = 0; j < i; ++j) {
+                            tmp.push(cart.shift());
+                        }
+                        cart.shift();
+                        for (let j = 0; j < tmp.length; ++j) {
+                            cart.unshift(tmp.pop());
+                        }
+                    }
+                    drawResult();
+                }))
+            .append(
+                $('<input></input>')
+                .addClass('form-control')
+                .attr('type', 'text')
+                .attr('placeholder', '備註')
+                .val(cart[i].comment)
+                .change(function() {
+                    cart[i].comment = $(this).val();
+                })
+            )
+        )
+    }
+
 
 }
