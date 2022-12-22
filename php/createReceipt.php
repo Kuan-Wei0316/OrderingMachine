@@ -2,7 +2,8 @@
 require_once "conn.php";
 $outputData= array();
 try{
-    $sql= "INSERT INTO receipt (comment,takeout) VALUES('".$_POST['comment']."','".$_POST['takeout']."');";
+    session_start();
+    $sql= "INSERT INTO receipt (comment,takeout,employee) VALUES('".$_POST['comment']."','".$_POST['takeout']."','".$_SESSION['e_id']."');";
     $conn->query($sql);
     $outputData['receiptId']= $conn->insert_id;
     $outputData['state']=200;

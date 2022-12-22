@@ -3,12 +3,11 @@ CREATE DATABASE order_machine_db;
 USE order_machine_db;
 
 CREATE TABLE `employee` (
-  `e_id` int(11) NOT NULL  AUTO_INCREMENT,
+  `e_id` int(11) NOT NULL AUTO_INCREMENT,
   `e_name` varchar(255) NOT NULL,
   `e_pwd_hash` varchar(255) NOT NULL,
   PRIMARY KEY (`e_id`)
-  
-);
+)AUTO_INCREMENT=6;
 
 CREATE TABLE `product` (
   `product_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -18,26 +17,32 @@ CREATE TABLE `product` (
   `product_label` text NOT NULL,
   `product_intro` text NOT NULL,
   PRIMARY KEY (`product_id`)
-);
+)AUTO_INCREMENT=34;
 
 CREATE TABLE `receipt` (
   `receipt_id` int(11) NOT NULL AUTO_INCREMENT,
   `create_time` timestamp NOT NULL DEFAULT current_timestamp(),
   `comment` text NOT NULL,
   `employee` int(11) NOT NULL,
+  `payment` tinyint(4) NOT NULL DEFAULT 0,
+  `delivery` tinyint(4) NOT NULL DEFAULT 0,
+  `takeout` tinyint(4) NOT NULL,
   PRIMARY KEY (`receipt_id`),
+  INDEX `employee` (`employee`),
   CONSTRAINT `receipt_ibfk_1` FOREIGN KEY (`employee`) REFERENCES `employee` (`e_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-);
+)AUTO_INCREMENT=13;
 
 CREATE TABLE `per_sell` (
   `product_id` int(11) NOT NULL,
   `num` int(11) NOT NULL DEFAULT 0,
   `receipt_id` int(11) NOT NULL,
   `sell_id` int(11) NOT NULL AUTO_INCREMENT,
+  INDEX `product_id` (`product_id`),
+  INDEX `receipt_id` (`receipt_id`),
   PRIMARY KEY (`sell_id`),
   CONSTRAINT `per_sell_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `product` (`product_id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `per_sell_ibfk_2` FOREIGN KEY (`receipt_id`) REFERENCES `receipt` (`receipt_id`) ON DELETE CASCADE ON UPDATE NO ACTION
-);
+) AUTO_INCREMENT=15;
 
 INSERT INTO `employee` (`e_id`, `e_name`, `e_pwd_hash`) VALUES
 (3, 'root', '$2y$10$/2Qyw3fAhzV1bv.6MjV49uwBhfVOIcirugXQdtQb3Vklz3sTTCi3i'),
