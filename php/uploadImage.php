@@ -5,7 +5,8 @@ try{
     if(isset($_FILES)&&$_FILES['image']['error']===UPLOAD_ERR_OK){
         $file=$_FILES['image']['tmp_name'];
         $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        $fileType= explode('.', $_FILES['image']['name'], 2)[1];
+        $nameEnd= explode('.', $_FILES['image']['name'], 100);
+        $fileType=end($nameEnd);
         
         $randstring = '';
         for ($i = 0; $i < 10; $i++) {
