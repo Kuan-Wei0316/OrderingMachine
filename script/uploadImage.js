@@ -85,25 +85,28 @@ function imgbbAPI(fData) {
 }
 
 function myAPI(element) {
-    return new Promise(function(resolve, reject) {
-        let formData = new FormData();
-        formData.append('image', element[0].files[0]);
-        $.ajax({
-            url: "http://localhost/workSpace/OrderingMachine/php/uploadImage.php",
-            type: "POST",
-            data: formData,
-            contentType: false, //required
-            processData: false, // required
-            mimeType: 'multipart/form-data',
-        }).done(function(res) {
-            res = JSON.parse(res);
-            if (res.state == 200) {
-                resolve(res.url);
-            } else {
-                console.log(res);
-            }
+    if (element[0].files.length == 0) return "";
+    else {
+        return new Promise(function(resolve, reject) {
+            let formData = new FormData();
+            formData.append('image', element[0].files[0]);
+            $.ajax({
+                url: "http://localhost/workSpace/OrderingMachine/php/uploadImage.php",
+                type: "POST",
+                data: formData,
+                contentType: false, //required
+                processData: false, // required
+                mimeType: 'multipart/form-data',
+            }).done(function(res) {
+                res = JSON.parse(res);
+                if (res.state == 200) {
+                    resolve(res.url);
+                } else {
+                    console.log(res);
+                }
+            });
         });
-    });
+    }
 }
 
 async function uploadImage(element) { //element是網頁中的原件，請已JQuery元件表示，如$("#inputFile")；結果會回傳照片的網址，使用時請加await

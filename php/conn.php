@@ -3,7 +3,7 @@ header("Access-Control-Allow-Origin: *");
 $dbServerName = "localhost";
 $dbUserName = "root";
 $dbPwd = "";
-$dbName = "ordering_machine";
+$dbName = "order_machine_db";
 
 // 伺服器設定
 // $dbServerName = "localhost";
